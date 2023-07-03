@@ -41,6 +41,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import androidx.core.content.FileProvider;
 import android.util.Base64;
+import android.util.Log;
 
 import org.apache.cordova.BuildHelper;
 import org.apache.cordova.CallbackContext;
@@ -279,8 +280,14 @@ public class CameraLauncher extends CordovaPlugin implements MediaScannerConnect
         } else if (saveAlbumPermission) {
             PermissionHelper.requestPermission(this, TAKE_PIC_SEC, Manifest.permission.CAMERA);
         } else if (takePicturePermission) {
-            PermissionHelper.requestPermissions(this, TAKE_PIC_SEC,
+
+            if (Build.VERSION.SDK_INT <= 32) {
+                PermissionHelper.requestPermissions(this, TAKE_PIC_SEC,
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_MEDIA_IMAGES});
+            } else {
+                PermissionHelper.requestPermissions(this, TAKE_PIC_SEC,new String[]{Manifest.permission.READ_MEDIA_IMAGES});
+            }
+
         } else {
             PermissionHelper.requestPermissions(this, TAKE_PIC_SEC, permissions);
         }
